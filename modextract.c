@@ -85,20 +85,20 @@ int main(int argc, char **argv) {
 
     read(fd, &pl, sizeof(struct patternlist));
 
-    printf("Number of patterns in song: %d\n", pl.length);
     switch (pl.type) {
         case MOD_SOUNDTRACKER:
             printf("Type: Soundtracker\n");
             break;
         default:
             printf("Type: Unknown (0x%08x)\n", pl.type);
+            printf("Can't extract this type of module. Aborting.\n");
+            return -1;
             break;
     }
 
     int maxpat = 0;
 
     for (i = 0; i < pl.length; i++) {
-        printf("Pattern %3d: %d\n", i, pl.table[i]);
         if (pl.table[i] > maxpat) maxpat = pl.table[i];
     }
 
@@ -108,10 +108,6 @@ int main(int argc, char **argv) {
 
     for (i = 0; i <= maxpat; i++) {
         read(fd, pattern, 1024);
-        for (j = 0; j < 30; j++) {
-            printf("%02x ", pattern[j]);
-        }
-        printf("\n");
     }
 
     printf("Samples start at %lu\n", lseek(fd, 0, SEEK_CUR));

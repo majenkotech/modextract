@@ -11,3 +11,6 @@ It has many many limitations:
   15 sample variant)
 * It doesn't detect any internal sample formats and assumes all samples are raw
   data
+
+Of course being an 8 bit format the samples in a MOD file are pretty crude quality
+and the results are no better than the original even when "upsampled" to 16 bit.
