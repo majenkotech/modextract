@@ -29,3 +29,18 @@ a sub-folder named after the name of the module (as gathered from the module hea
 structure).
 
 Samples are accompanied by a small text file describing the sample (loop start/end, etc).
+
+Building
+--------
+
+There are no dependencies or requirements. Just run:
+
+    $ make
+
+Then to install in /usr/local/bin:
+
+    $ sudo make install
+
+If you want to install elsewhere (`~/bin/` for example) just copy `modextract` to there.
+
+    $ cp modexract ~/bin/
