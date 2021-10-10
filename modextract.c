@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 #include <endian.h>
@@ -9,6 +10,9 @@
 #include <sys/types.h>
 
 #define MOD_SOUNDTRACKER 0x2e4b2e4d
+
+#define RATE 11025
+// #define RATE 8287
 
 struct sample {
     char name[22];
@@ -48,20 +52,43 @@ struct wav_header {
     // uint8_t bytes[]; // Remainder of wave file is bytes
 } __attribute__((packed));
 
+static inline void usage() {
+    printf("Usage: modextract [-r rate] mod.filename\n");
+}
+
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        printf("Usage: modinfo <module>\n");
+
+    int rate = RATE;
+    char *module = NULL;
+
+    int opt = 0;
+
+    while ((opt = getopt(argc, argv, "r:")) != -1) {
+        switch (opt) {
+            case 'r':
+                rate = atoi(optarg);
+                break;
+            default:
+                usage();
+                return -1;
+        }
+    }
+
+    if (optind >= argc) {
+        usage();
         return -1;
     }
 
-    int acc = access(argv[1], R_OK);
+    module = argv[optind];
+
+    int acc = access(module, R_OK);
 
     if (acc != 0) {
         printf("Error: %s\n", strerror(errno));
         return -1;
     }
 
-    int fd = open(argv[1], O_RDONLY);
+    int fd = open(module, O_RDONLY);
     if (!fd) {
         printf("Error: %s\n", strerror(errno));
         return -1;
@@ -120,7 +147,7 @@ int main(int argc, char **argv) {
     header.fmt_chunk_size = 16;
     header.audio_format = 1;
     header.num_channels = 1;
-    header.sample_rate = 8287;
+    header.sample_rate = rate;
     header.byte_rate = header.sample_rate * 2;
     header.sample_alignment = 2;
     header.bit_depth = 16;
