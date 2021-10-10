@@ -179,6 +179,19 @@ int main(int argc, char **argv) {
             write(fd2, &v16, 2);
         }
         close(fd2);
+
+
+        snprintf(tmp, 100, "samples/%s/%02d - %s.txt", modname, i, s[i].name);
+        FILE *f = fopen(tmp, "w");
+        fprintf(f, "Sample name: %s\n", s[i].name);
+        fprintf(f, "Sample length: %d samples\n", s[i].length * 2);
+        if (s[i].loop_length > 1) {
+            fprintf(f, "Loop start: %d\n", s[i].loop_start * 2);
+            fprintf(f, "Loop length: %d\n", s[i].loop_length * 2);
+            fprintf(f, "Loop end: %d\n", s[i].loop_start * 2 + s[i].loop_length * 2);
+        }
+        fclose(f);
+
     }
 
     return 0;
